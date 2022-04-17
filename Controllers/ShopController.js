@@ -1,6 +1,6 @@
 // const path = require('path');
 // const ErrorResponse = require('../utils/errorResponse');
-const geocoder = require("../utils/geocoder");
+const geocoder = require("../Utils/geocoder");
 const asyncHandler = require("../Middleware/async");
 const Shop = require("../models/shopsModel");
 
