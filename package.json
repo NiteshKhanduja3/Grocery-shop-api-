@@ -2,9 +2,9 @@
   "name": "grocery-shop-api",
   "version": "1.0.0",
   "description": "Api for groceryshop",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
-    "start": "app.js",
+    "start": "server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
