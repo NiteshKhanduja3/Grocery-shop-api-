@@ -10,12 +10,25 @@ const OtpModel = require("../models/OtpverificationModel");
 const SmsSender = require("../Utils/SmsSender");
 const OtpGenerator = require("../Utils/OtpGenerator");
 
-module.exports.signUp = async (req, res) => {
+module.exports.signUp =asyncHandler( async (req, res) => {
+
+  if (!req.body.number|| !req.body.address || !req.body.name || !req.body.address|| !req.body.email){
+    res.send({message:"name email address and pincode required"})
+  }
+  else{
   const user = await User.findOne({
     number: req.body.number,
+    name:req.body.name,
+    address:req.body.address,
+    pincode:req.body.pincode,
+    email:req.body.email
+
   });
 
   if (user) return res.status(400).send("UserAlredy Registerd");
+
+  else{
+
   const OTP =OtpGenerator()
   const number = req.body.number;
 
@@ -30,14 +43,14 @@ module.exports.signUp = async (req, res) => {
   otp.otp = await bcrypt.hash(otp.otp, salt);
   const result = await otp.save();
   const userDetails = await User.create(req.body);
-  return res.status(200).send({message:"Otp sent successfully And Data has been saved",OTP:OTP});
+  return res.status(200).send({message:"Otp sent successfully And Data has been saved",OTP:OTP});}
 
-};
+}});
 
 // Login Module
 // @post : localhost:8080/api/user/login/verify
 
-module.exports.login = async (req, res) => {
+module.exports.login = asyncHandler(async (req, res) => {
   const user = await User.findOne({
     number: req.body.number,
   });
@@ -60,12 +73,12 @@ module.exports.login = async (req, res) => {
   } else {
     return res.status(400).send({ message: "Please Signup"});
   }
-};
+});
 
 // Verify OTP For Signup /Login
 // @post : localhost:8080/api/user/signup/verify
 
-module.exports.veryFyOtp = async (req, res) => {
+module.exports.veryFyOtp = asyncHandler(async (req, res) => {
   const otpSaved = await OtpModel.find({
     number: req.body.number,
   });
@@ -88,7 +101,7 @@ module.exports.veryFyOtp = async (req, res) => {
   } else {
     return res.status(400).send("wrong otp");
   }
-};
+});
 
 //      Get single user
 //   GET /users/:id
