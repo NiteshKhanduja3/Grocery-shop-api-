@@ -30,7 +30,7 @@ module.exports.signUp = async (req, res) => {
   otp.otp = await bcrypt.hash(otp.otp, salt);
   const result = await otp.save();
   const userDetails = await User.create(req.body);
-  return res.status(200).send({message:"Otp sent successfully And Data has been saved"});
+  return res.status(200).send({message:"Otp sent successfully And Data has been saved",OTP:OTP});
 
 };
 
@@ -56,9 +56,9 @@ module.exports.login = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     otp.otp = await bcrypt.hash(otp.otp, salt);
     const result = await otp.save();
-    return res.status(200).send("Otp sent succfully");
+    return res.status(200).send({message:"Otp sent succfully",OTP:OTP} );
   } else {
-    return res.status(400).send({ message: "Please Signup" });
+    return res.status(400).send({ message: "Please Signup"});
   }
 };
 
