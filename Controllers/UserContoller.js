@@ -82,7 +82,7 @@ module.exports.veryFyOtp = asyncHandler(async (req, res) => {
   const otpSaved = await OtpModel.find({
     number: req.body.number,
   });
-  if (otpSaved.length === 0) return res.status(400).send("Otp Expired");
+  if (otpSaved.length === 0) return res.status(400).send("Otp Expired/ Invalid OTP");
 
   const lastOtpGot = otpSaved[otpSaved.length - 1];
 

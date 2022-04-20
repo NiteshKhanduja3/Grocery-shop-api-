@@ -1,9 +1,10 @@
 const NodeGeocoder = require('node-geocoder');
+import { env } from 'process';
 
 const options = {
-  provider:process.env.GEO_NAME,
+  provider: env.GEO_NAME,
   httpAdapter: 'https',
-  apiKey: process.env.MAP_QUEST,
+  apiKey: env.MAP_QUEST,
   formatter: null
 };
 
