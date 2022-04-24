@@ -110,6 +110,7 @@ module.exports.veryFyOtp = asyncHandler(async (req, res) => {
         success: true,
         error:false,
         data: user,
+        token:token,
       message:"Signin/Login successful" });
   } else {
     return res.status(400).send({
