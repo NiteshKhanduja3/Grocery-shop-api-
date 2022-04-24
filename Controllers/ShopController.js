@@ -14,7 +14,7 @@ exports.getshop = asyncHandler(async (req, res, next) => {
     return res.status(404).send({ message: "No shop Found" });
   }
 
-  res.status(200).json({ success: true, data: shop });
+  res.status(200).json({ success: true, data: shop,error:false,status:200,message:"ShopData" });
 });
 
 //     Create new shop
@@ -36,6 +36,8 @@ exports.createshop = asyncHandler(async (req, res, next) => {
   const shop = await Shop.create(req.body);
 
   res.status(201).json({
+    error:false,
+    staus:201,
     success: true,
     data: shop,
   });

@@ -1,5 +1,5 @@
 const NodeGeocoder = require('node-geocoder');
-import { env } from 'process';
+const env = require('process');
 
 const options = {
   provider: env.GEO_NAME,

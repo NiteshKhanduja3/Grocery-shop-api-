@@ -31,9 +31,6 @@ module.exports.signUp =asyncHandler( async (req, res) => {
 
   const OTP =OtpGenerator()
   const number = req.body.number;
-
-  console.log(OTP);
-
   const message = `Your OTP is ${OTP}`;
 
   SmsSender(message, req.body.number);
@@ -43,7 +40,8 @@ module.exports.signUp =asyncHandler( async (req, res) => {
   otp.otp = await bcrypt.hash(otp.otp, salt);
   const result = await otp.save();
   const userDetails = await User.create(req.body);
-  return res.status(200).send({message:"Otp sent successfully And Data has been saved",OTP:OTP});}
+  return res.status(200).send({message:"Otp sent successfully And Data has been saved",OTP:OTP,status:200,
+error:false,success:true});}
 
 }});
 
@@ -59,8 +57,6 @@ module.exports.login = asyncHandler(async (req, res) => {
     const OTP = OtpGenerator()
     const number = req.body.number;
 
-    console.log(OTP);
-
     const message = `Your OTP is ${OTP}`;
 
     SmsSender(message, req.body.number);
@@ -69,9 +65,20 @@ module.exports.login = asyncHandler(async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     otp.otp = await bcrypt.hash(otp.otp, salt);
     const result = await otp.save();
-    return res.status(200).send({message:"Otp sent succfully",OTP:OTP} );
+    return res.status(200).send({
+      status:200,
+       data:res.data,
+      success: true,
+      error:false,
+      OTP: OTP,
+    message:"Signin/Login successful" } );
   } else {
-    return res.status(400).send({ message: "Please Signup"});
+    return res.status(400).send({  
+      status:400,
+      data:res.data,
+      success: false,
+      error:true,
+    message:"Please Signup" });
   }
 });
 
@@ -82,6 +89,7 @@ module.exports.veryFyOtp = asyncHandler(async (req, res) => {
   const otpSaved = await OtpModel.find({
     number: req.body.number,
   });
+
   if (otpSaved.length === 0) return res.status(400).send("Otp Expired/ Invalid OTP");
 
   const lastOtpGot = otpSaved[otpSaved.length - 1];
@@ -89,7 +97,7 @@ module.exports.veryFyOtp = asyncHandler(async (req, res) => {
   const valid = await bcrypt.compare(req.body.otp, lastOtpGot.otp);
 
   if (lastOtpGot.number == req.body.number && valid) {
-    const user = new User(_.pick(req.body, ["number"]));
+    const user = new User(_.pick(req.body, ["number","address","name","pincode","email"]));  
     const token = user.generateJWT();
     const result = await user.save();
     const OTPdelete = await OtpModel.deleteMany({
@@ -97,9 +105,18 @@ module.exports.veryFyOtp = asyncHandler(async (req, res) => {
     });
     return res
       .status(200)
-      .send({ message: "UserRegested / Signin successfully", token: token });
+      .send({ status:200,
+        data:res.data,
+        success: true,
+        error:false,
+        data: user,
+      message:"Signin/Login successful" });
   } else {
-    return res.status(400).send("wrong otp");
+    return res.status(400).send({
+      status:400,
+      error:true,
+      message:"Wrong/ExpireOtp"
+    });
   }
 });
 
@@ -107,10 +124,12 @@ module.exports.veryFyOtp = asyncHandler(async (req, res) => {
 //   GET /users/:id
 
 exports.getUser = asyncHandler(async (req, res, next) => {
-    console.log("parmas",req.params.id)
     const user = await User.findById(req.params.id);
   
     res.status(200).json({
+      status:200,
+      data:res.data,
+      error:false,
       success: true,
       data: user
     });
@@ -126,7 +145,10 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
     });
   
     res.status(200).json({
+      status:200,
+      data:res.data,
       success: true,
+      error:false,
       data: user
     });
   });
@@ -143,8 +165,11 @@ exports.updateAddress = asyncHandler(async(req,res,next)=>{
       });
     
       res.status(200).json({
-        success: true,
-        data: user
+        status:200,
+      data:res.data,
+      success: true,
+      error:false,
+      data: user
       });
     });
 
@@ -155,8 +180,11 @@ exports.updateAddress = asyncHandler(async(req,res,next)=>{
     await User.findByIdAndDelete(req.params.id);
   
     res.status(200).json({
+      status:200,
+      data:res.data,
       success: true,
-      data: {}
+      error:false,
+      data: user
     });
   });
   
